@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Login</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js">
+	</script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="./css/main.css">
+
+	<style>
+		#matrix-container {
+			display: grid;
+			grid-template-columns: repeat(7, 40px);
+			grid-template-rows: repeat(7, 40px);
+			gap: 5px;
+			margin-bottom: 15px;
+			margin-left: 24px;
+		}
+		.matrix-cell {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			width: 40px;
+			height: 40px;
+			border: 1px solid #ccc;
+			cursor: pointer;
+			font-size: 14px;
+			transition: background-color 0.3s ease;
+		}
+
+		.matrix-cell:hover {
+			background-color: #e6e6e6;
+		}
+	</style>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			const userName = document.getElementById('email').value;
+			$( "#form" ).submit(function(event) {
+				event.preventDefault();
+				
+				$.ajax({
+					type: 'POST',
+					url: '/login',
+					data: {
+						email:userName,
+						sequence: JSON.stringify(positionValues)
+					},
+					dataType: "json",
+					success: function(response){
+						//alert("a");
+						//console.log(response.Success);
+						$('#form')[0].reset();
+
+						document.getElementById("check").innerHTML=response.Success;
+         					//ADD THIS CODE
+         					setTimeout(function(){
+         						document.getElementById("check").innerHTML="";
+         					},3000);
+         					if (response.Success=="Success!") {
+         						document.getElementById("aa").click();
+         					};
+         				},
+         				error: function() {
+         				}
+         			})
+			});
+
+		});
+	</script>
+	
+</head>
+<body>
+	<div class="col-md-4 col-md-offset-4">
+		<div class="login-container">
+			<div>
+				<p>Login</p>
+			</div>
+			<div class="form-group">
+				<form id="form" method="post" >
+					<input type="text" name="email" id="email" placeholder="E-mail" required="" class="form-control"><br/>
+					<div id="matrix-container"></div><br/>
+					<input type="submit" value="Login" class="btn btn-success">
+				</form>
+			</div>
+			<div class="mssg bg-danger">
+				<span id="check" ></span>
+			</div>
+			<div id="LangTable"><a href="/profile" id="aa"></a>
+			</div>
+			<div><span>Create a new Account?</span><a href="/">Register here</a>
+			</div>
+		
+		
+	</div>
+</body>
+<script>
+	const matrixContainer = document.getElementById('matrix-container');
+	const selectedPositionsDiv = document.getElementById('selected-positions');
+	const resultDiv = document.getElementById('result');
+	const characters = 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+	const selectedPositions = [];
+	const maxSelections = 3;
+	let positionValues = []
+	document.addEventListener('DOMContentLoaded', function () {
+    // Function to generate a random two-character combination
+    function generateRandomTwoCharCombination() {
+        const firstCharIndex = Math.floor(Math.random() * characters.length);
+        const secondCharIndex = Math.floor(Math.random() * characters.length);
+        return characters[firstCharIndex] + characters[secondCharIndex];
+    }
+
+    // Function to update the content of all cells with new values
+    function updateMatrix() {
+        const cells = document.querySelectorAll('.matrix-cell');
+        cells.forEach(cell => {
+            const twoCharCombination = generateRandomTwoCharCombination();
+            cell.textContent = twoCharCombination;
+        });
+    }
+
+    // Initial generation of matrix
+    for (let i = 0; i < 7; i++) {
+        for (let j = 0; j < 7; j++) {
+            const twoCharCombination = generateRandomTwoCharCombination();
+            const cell = document.createElement('div');
+            cell.classList.add('matrix-cell');
+            cell.textContent = twoCharCombination;
+
+            // Add event listeners
+            if (i < 3 && j < 3) {
+                cell.addEventListener('click', (e) => handlePositionSelection(i, j, cell, e, twoCharCombination, 0));
+                cell.addEventListener('contextmenu', (e) => {
+                    e.preventDefault(); // Prevent the default context menu
+                    handlePositionSelection(i, j, cell, e, twoCharCombination, 1);
+                });
+            } else {
+                cell.addEventListener('click', (e) => handleCharacterSelection(cell, twoCharCombination, 0));
+                cell.addEventListener('contextmenu', (e) => {
+                    e.preventDefault(); // Prevent the default context menu
+                    handleCharacterSelection(cell, twoCharCombination, 1);
+                });
+            }
+
+            matrixContainer.appendChild(cell);
+        }
+    }
+
+    // Update the matrix every 3 seconds
+    setInterval(updateMatrix, 10000);
+});
+
+
+	// Function to handle position selection
+	// Function to handle position selection
+function handlePositionSelection(row, col, cell, event) {
+	// Toggle selection of a position
+	const position = { row, col };
+
+	// Check if the selected position already exists in the list of selected positions
+	const index = selectedPositions.findIndex(pos => pos.row === row && pos.col === col);
+
+if (index !== -1) {
+		// Deselect the position
+	selectedPositions.splice(index, 1);
+		//cell.classList.remove('selected');
+	} else {
+		// Check if maximum selections have been reached
+		if (selectedPositions.length >= maxSelections) {
+			alert('You can only select up to 3 positions.');
+			return;
+		}
+		// Select the position
+		selectedPositions.push(position);
+		cell.classList.add('selected');
+	}
+
+	// Update the display of selected positions
+	updateSelectedPositionsDisplay();
+}
+
+// Function to update the display of selected positions
+function updateSelectedPositionsDisplay() {
+	selectedPositionsDiv.textContent = 'Selected positions:';
+	selectedPositions.forEach((pos, index) => {
+		const positionText = ` (${pos.row + 1}, ${pos.col + 1})${index < selectedPositions.length - 1 ? "," : ''}`;
+		selectedPositionsDiv.textContent += positionText;
+	});
+}
+
+	// Function to handle character selection
+	function handleCharacterSelection(cell, twoCharCombination, charIndex) {
+		// Determine the character to select based on the type of click (0 for left-click, 1 for right-click)
+		const selectedChar = twoCharCombination[charIndex];
+
+		// Check if all positions have been selected
+		if (selectedPositions.length < maxSelections) {
+			alert('Please select 3 positions first.');
+			return;
+		}
+
+		// Check if the maximum selections have been reached
+		const positionIndex = selectedPositions.findIndex(pos => pos.symbol === undefined);
+
+		if (positionIndex === -1) {
+			alert('All positions are already filled.');
+			return;
+		}
+
+		// Assign the character to the next available position
+		selectedPositions[positionIndex].symbol = selectedChar;
+
+		// Update the display of selected positions
+		updateSelectedPositionsDisplay();
+
+		// Check if all positions are filled
+		if (selectedPositions.length === maxSelections && selectedPositions.every(pos => pos.symbol !== undefined)) {
+			comparePositionsWithHiddenMatrix();
+		}
+	}
+
+	function createKeyValuePair(pos) {
+		// Check if the symbol is not an empty string (space)
+		if (pos.symbol && pos.symbol !== ' ') {
+			return {
+				[`(${pos.row + 1}, ${pos.col + 1})`]: pos.symbol
+			};
+		} else {
+			// If the symbol is empty (space), return null or undefined
+			return null;
+		}
+	}
+	// Function to update the display of selected positions
+	function updateSelectedPositionsDisplay() {
+		selectedPositions.forEach((pos,index)=> {
+			// Create a key-value pair for each position
+			const pair = createKeyValuePair(pos);
+			
+			// If the key-value pair is not null, add it to the positionValues array
+			if (pair !== null) {
+				positionValues.push(pair);
+			}
+			
+		});
+		positionValues = positionValues.splice(-3)
+		console.log("data",positionValues)
+	}
+
+</script>
+</html>
+

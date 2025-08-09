@@ -1,0 +1,48 @@
+
+<!DOCTYPE html>
+<!-- Designined by CodingLab | www.youtube.com/codinglabyt -->
+<html lang="en" dir="ltr">
+  <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js">
+	</script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="./css/main.css">
+    <meta charset="UTF-8">
+    <title> Sticky Navigation Bar | CodingLab </title>
+    <link rel="stylesheet" href="style.css">
+   </head>
+<body>
+  <nav>
+    <div class="nav-content">
+      <div class="logo">
+        <a>Our Logo</a>
+      </div>
+      <ul class="nav-links">
+        <li><a href="#">Home</a></li>
+        <li><a href="#">service</a></li>
+        <li><a href="/forgetpass">Reset</a></li>
+        <li><a href="/login">logout</a></li>
+      </ul>
+    </div>
+  </nav>
+  <section class="home"></section>
+  <div class="text">
+    
+    <p><div id="dash-heading"><h2>Hai, <%=name%> &#128075;</h2></div>
+    <p>In today's interconnected digital landscape, password security stands as a crucial pillar in safeguarding personal and sensitive information. Robust password practices involve the creation of complex, unique passwords for each account, incorporating a mix of uppercase and lowercase letters, numbers, and special characters. It's imperative to avoid easily guessable passwords like "password123" or common phrases, opting instead for unpredictable combinations that thwart brute force attacks. Furthermore, regular password updates and the utilization of multi-factor authentication add additional layers of protection, reducing the risk of unauthorized access. Consistent vigilance, education on phishing tactics, and the use of reputable password management tools bolster the resilience of our online defenses, ensuring the integrity and confidentiality of our digital identities and assets.</p>
+  </div>
+
+  <script>
+  let nav = document.querySelector("nav");
+    window.onscroll = function() {
+      if(document.documentElement.scrollTop > 20){
+        nav.classList.add("sticky");
+      }else {
+        nav.classList.remove("sticky");
+      }
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,201 @@
+/*body,
+ table,
+    thead,
+    tr,
+    tbody,
+    th,
+    td {
+        text-align: center;
+    }*/
+body{
+	text-align: center !important;
+    background-color:#FAF9F6;
+}
+p{
+	margin-top: 20px;
+	font-size: 20px;
+}
+input{
+	text-align: center;
+}
+.mssg{
+	margin-top: 5px;
+	margin-bottom: 5px;
+	border-radius: 5px;
+}
+
+.login-container {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 400px;
+    text-align: center;
+    /* Use flexbox for easy alignment */
+    justify-content: center; /* Align items horizontally to the center */
+    align-items: center; 
+    margin-top: 50px;
+
+  }
+
+  /* Styling the matrix grid */
+  table {
+    border-collapse: collapse;
+    margin-bottom: 10px;
+    width: 200px; /* Adjust the width as needed */
+    margin: 0 auto;
+     /* Center the table horizontally */
+}
+
+td {
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    border: 1px solid #ddd; /* Use a lighter color for border */
+    cursor: pointer;
+    transition: background-color 0.25s ease-in-out;
+    grid-template-columns: repeat(7, 40px);
+	grid-template-rows: repeat(7, 40px); /* Smooth transition */
+}
+
+td:hover {
+    background-color: #f0f0f0; /* Light gray background on hover */
+}
+
+/* Highlighting selected cells */
+td.selected {
+    background-color: #b0f5bf; /* Yellow background for selected cells */
+}
+
+h2 {
+    text-align: center;
+    color: #333; /* Dark gray color for headings */
+}
+
+#create-matrix {
+    background-color: #4caf50;
+    color: #fff;
+    cursor: pointer;
+    width: 200px; /* Adjust width as needed */
+    height: 40px;
+    border: none; /* Remove border */
+    border-radius: 4px;
+    display: block;
+    margin: 0 auto; /* Center the button horizontally */
+    font-size: 16px; /* Larger font size */
+    transition: background-color 0.3s ease-in-out; /* Smooth transition */
+}
+
+#create-matrix:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
+
+.btn-align{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+input{
+    display: flex;justify-content: center;align-items: center;
+}
+
+.heading
+{
+    text-align: center;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    margin-bottom: 30px;
+}
+
+.reg-form-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* style for user dashboard */
+/* Google Font Link */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Ubuntu:wght@400;500;700&display=swap');*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+    font-family: 'Ubuntu', sans-serif;
+  }
+  nav{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px;
+    transition: all 0.4s ease;
+  }
+  nav.sticky{
+    padding: 15px 20px;
+    background: #4caf50;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  }
+  nav .nav-content{
+    height: 100%;
+    max-width: 1200px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  nav .logo a{
+    font-weight: 500;
+    font-size: 35px;
+    color: #4caf50;
+    margin-left: 30px;
+  }
+  nav.sticky .logo a{
+    color: #fff;
+  }
+  .nav-content .nav-links{
+    display: flex;
+  }
+  .nav-content .nav-links li{
+    list-style: none;
+    margin: 0 8px;
+  }
+   .nav-links li a{
+    text-decoration: none;
+    color: #0E2431;
+    font-size: 18px;
+    font-weight: 500;
+    padding: 10px 4px;
+    transition: all 0.3s ease;
+  }
+   .nav-links li a:hover{
+     color: #4070f4;
+   }
+   nav.sticky .nav-links li a{
+     color: #fff;
+     transition: all 0.4s ease;
+  }
+   nav.sticky .nav-links li a:hover{
+    color: #0E2431;
+  }
+  .home{
+    height: 100vh;
+    width: 100%;
+    background: url("1.jpg") no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    font-family: 'Ubuntu', sans-serif;
+    text-align: center;
+    margin-top: 0px;
+  }
+  #dash-heading{
+    font-size: 30px;
+    margin-bottom: 6px;
+    color: #4070f4;
+  }
+  .text{
+    text-align: justify;
+    padding: 40px 80px;
+    box-shadow: -5px 0 10px rgba(0, 0, 0, 0.1);
+  }
+  

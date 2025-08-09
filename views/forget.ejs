@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Forget Password</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js">
+	</script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="./css/main.css">
+	
+
+	<script type="text/javascript">
+		$(document).ready(function(){
+
+			$( "#form2" ).submit(function(event) {
+
+				event.preventDefault();
+
+				$.ajax({
+					type: 'POST',
+					url: '/forgetpass',
+					data: $('#form2').serialize(),
+					dataType: "json",
+					success: function(response){
+						//alert("a");
+						//console.log(response.Success);
+						$('#form2')[0].reset();
+						//alert("abc");
+						document.getElementById("check").innerHTML=response.Success;
+
+						setTimeout(function(){
+							document.getElementById("check").innerHTML="";
+						},3000);
+						if (response.Success=="Password changed!") {
+							document.getElementById("aa").click();
+							setTimeout(() => {
+        							window.location.href = '/profile'; // Redirect to the profile path
+    							}, 3000);
+						};
+					},
+					error: function() {
+					}
+				})
+			});
+
+		});
+	</script>
+</head>
+<body>
+
+		<div class="col-md-4 col-md-offset-4">
+			
+			<div class="login-container">
+				<div class="heading">
+					<p>Change Password</p>
+				</div>
+			<div class="form-group">
+				<form id="form2" method="post">
+					<input type="text" name="email" id="email" placeholder="E-mail" required="" class="form-control"><br/>
+					<input type="password" name="password" id="password" placeholder="Password" required="" class="form-control"><br/>
+					<input type="password" name="passwordConf" id="passwordConf" placeholder="Confirm Password" required="" class="form-control"><br/>
+					<input type="hidden" id="sequence" name="sequence">
+				<table id="matrix-grid"></table>
+				<div id="selected-positions-display"></div>
+				<input type="submit" value="Change Password" class="btn btn-success" style="display: none;margin-left: 110px;margin-top: 20px;">
+				<input type="button" id="create-matrix-btn" class="btn btn-success" value="Create Matrix" disabled="true">
+				</form>
+			</div>
+			<div  class="mssg bg-danger">
+				<span id="check"></span>
+				</div>
+				<div id="LangTable"><a href="/profile" id="aa"></a>
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>
+
+
+<script>
+    const password = document.getElementById('password');
+    const confPassword = document.getElementById('passwordConf');
+    const registerButton = document.querySelector('input[type="submit"]');
+	const matrixButton  = document.getElementById('create-matrix-btn');
+
+    function showRegisterButton() {
+        if (password && confPassword) {
+            if (password.value === confPassword.value && password.value !== '') {
+                //registerButton.style.display = 'block'; // Show the register button
+				matrixButton.disabled = false;
+			} else {
+                //registerButton.style.display = 'none'; // Hide the register button
+				matrixButton.disabled = true;
+			}
+        } else {
+            //registerButton.style.display = 'none'; // Hide the register button if either field is missing
+			matrixButton.disabled = true;
+		}
+    }
+
+    // Call the function whenever there is a change in the password or confirm password fields
+    password.addEventListener('input', showRegisterButton);
+    confPassword.addEventListener('input', showRegisterButton);
+</script>
+
+<script>
+	let matrix = [];
+	let selectedCells = [];
+	const maxSelections = 3;
+
+	// Function to create and display the matrix grid
+	function createMatrixGrid() {
+		const matrixGrid = document.getElementById('matrix-grid');
+		const registerButton = document.querySelector('input[type="submit"]');
+		const matrixButton  = document.getElementById('create-matrix-btn');
+		registerButton.style.display = 'block';
+		matrixButton.style.display = 'none';
+		
+		matrixGrid.innerHTML = ''; // Clear existing grid
+
+		for (let row = 0; row < 3; row++) {
+			const tr = document.createElement('tr');
+
+			for (let col = 0; col < 3; col++) {
+				const td = document.createElement('td');
+				td.textContent = matrix[row][col];
+				td.setAttribute('data-row', row);
+				td.setAttribute('data-col', col);
+				td.addEventListener('click', handleCellClick);
+				tr.appendChild(td);
+			}
+
+			matrixGrid.appendChild(tr);
+		}
+	}
+
+	// Event handler for cell clicks
+	function handleCellClick(event) {
+		const cell = event.target;
+		const row = parseInt(cell.getAttribute('data-row'));
+		const col = parseInt(cell.getAttribute('data-col'));
+
+		// Check if the cell is already selected
+		const existingIndex = selectedCells.findIndex(pos => pos.row === row && pos.col === col);
+
+		if (existingIndex !== -1) {
+			// Deselect the cell
+			selectedCells.splice(existingIndex, 1);
+			cell.classList.remove('selected');
+		} else {
+			// Select the cell if the maximum number of selections is not reached
+			if (selectedCells.length < maxSelections) {
+				selectedCells.push({ row, col });
+				cell.classList.add('selected');
+			}
+		}
+
+		// Display selected positions
+		displaySelectedPositions();
+	}
+
+	// Function to display selected positions and their values
+	function displaySelectedPositions() {
+		const selectedPositionsDisplay = document.getElementById('selected-positions-display');
+		const selectedPositions = [];
+
+		for (const pos of selectedCells) {
+			const value = matrix[pos.row][pos.col];
+			selectedPositions.push({
+				[`(${pos.row + 1}, ${pos.col + 1})`]: value
+			});
+		}
+		
+		const sequenceField = document.getElementById('sequence');
+		sequenceField.value = JSON.stringify(selectedPositions)
+		selectedPositionsDisplay.innerHTML.value = JSON.stringify(selectedPositions);
+	}
+
+	// Event listener to create the matrix when button is clicked
+	document.getElementById('create-matrix-btn').addEventListener('click', () => {
+		const input = document.getElementById('passwordConf').value;
+		const values = input.split("");
+
+		if (values.length !== 9) {
+			alert('Please enter exactly 9 values.');
+			return;
+		}
+
+		// Create 3x3 matrix from input values
+		matrix = [];
+		for (let i = 0; i < 3; i++) {
+			matrix.push(values.slice(i * 3, i * 3 + 3));
+		}
+
+		// Reset selected cells
+		selectedCells = [];
+		createMatrixGrid();
+	});
+
+</script>
